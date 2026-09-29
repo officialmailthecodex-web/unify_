@@ -1,4 +1,4 @@
-# CampusAlert (Firebase edition)
+# UNIFY-CAMPUS(Firebase edition)
 Firebase Authentication (email/password) + Firestore + Flask. Roles: **hosteler**, **staff** (queue + AI briefing), **pharmacy** (stock desk). Complaints get an AI urgency score (Gemini) blended with transparent rules.
 
 ## Firebase setup (once)
