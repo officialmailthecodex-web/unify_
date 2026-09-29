@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in . UNIFY-CAMPUS</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"></head><body class="login">
+<aside>
+  <h1>UNIFY CAMPUS</h1>
+  <p class="lead">Report small problems early. AI ranks what needs fixing first.</p>
+  <ul><li><b>Say it your way.</b> English, Hindi or Hinglish.</li><li><b>AI ranks it.</b> Fire, medical and safety risks jump to the top, with the reason shown.</li><li><b>Need medicine?</b> See what the college pharmacy has in stock.</li></ul>
+</aside>
+<section>
+<form id="af" novalidate>
+  <div class="tabs" role="tablist"><button type="button" role="tab" id="tIn" aria-selected="true">Sign in</button><button type="button" role="tab" id="tUp" aria-selected="false">Create account</button></div>
+  <div id="upOnly" hidden>
+    <label>Full name<input id="name" autocomplete="name"></label>
+    <label>Student or staff ID<input id="sid" placeholder="S2026001"></label>
+    <div class="row"><label>Hostel (hostelers)<input id="hostel" placeholder="Hostel C"></label><label>Room<input id="room" placeholder="214"></label></div>
+    <label>Academic program<input id="program" placeholder="Computer Science &amp; Engineering"></label>
+  </div>
+  <label>Email<input id="email" type="email" autocomplete="email" required placeholder="you@srmap.edu.in"></label>
+  <label>Password<span class="pwrap"><input id="pw" type="password" autocomplete="current-password" minlength="6" required><button type="button" id="eye" class="b" aria-label="Show password">Show</button></span></label>
+  <p id="err" class="err" role="alert"></p>
+  <button class="go" id="go">Sign in</button>
+  <p class="m" id="hint"><a href="#" id="forgot">Forgot password?</a></p>
+  <p class="m" id="staffNote" hidden>Staff and pharmacy team: sign up with your official email. Access is granted automatically if it is on the approved list.</p>
+</form>
+</section>
+<script type="module">
+import { auth } from "./firebase-init.js";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const $=id=>document.getElementById(id); let up=false, busy=false;
+const MSG={"auth/invalid-credential":"Wrong email or password.","auth/user-not-found":"No account with this email.","auth/wrong-password":"Wrong email or password.",
+"auth/email-already-in-use":"This email already has an account. Sign in instead.","auth/weak-password":"Use at least 6 characters.","auth/invalid-email":"Enter a valid email address.",
+"auth/too-many-requests":"Too many attempts. Wait a few minutes and try again.","auth/network-request-failed":"No internet connection."};
+const fail=e=>{$("err").textContent=MSG[e.code]||e.message||"Something went wrong."};
+function mode(u){up=u;$("upOnly").hidden=!u;$("staffNote").hidden=!u;$("hint").hidden=u;$("go").textContent=u?"Create account":"Sign in";$("err").textContent="";
+  $("tIn").setAttribute("aria-selected",!u);$("tUp").setAttribute("aria-selected",u);$("pw").autocomplete=u?"new-password":"current-password";
+  ["name","sid"].forEach(i=>$(i).required=u)}
+$("tIn").onclick=()=>mode(false);$("tUp").onclick=()=>mode(true);
+$("eye").onclick=()=>{const s=$("pw").type==="password";$("pw").type=s?"text":"password";$("eye").textContent=s?"Hide":"Show"};
+$("forgot").onclick=async e=>{e.preventDefault();if(!$("email").value)return $("err").textContent="Enter your email first, then click Forgot password.";
+  try{await sendPasswordResetEmail(auth,$("email").value.trim());$("err").style.color="var(--low)";$("err").textContent="Reset link sent. Check your inbox.";}catch(x){fail(x)}};
+$("af").onsubmit=async e=>{e.preventDefault();if(busy)return;$("err").style.color="";$("err").textContent="";
+  if(!$("af").checkValidity())return $("af").reportValidity();
+  busy=true;$("go").disabled=true;const email=$("email").value.trim(),pw=$("pw").value;
+  try{
+    if(!up){await signInWithEmailAndPassword(auth,email,pw)}
+    else{
+      const c=await createUserWithEmailAndPassword(auth,email,pw);
+      const r=await fetch("/api/profile",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+await c.user.getIdToken()},
+        body:JSON.stringify({name:$("name").value,sid:$("sid").value,hostel:$("hostel").value,room:$("room").value,program:$("program").value})});
+      if(!r.ok){const d=await r.json();await c.user.delete();throw new Error(d.error)}    // roll back so they can retry
+      await updateProfile(c.user,{displayName:$("name").value});
+    }
+    location.href="/";
+  }catch(x){fail(x);busy=false;$("go").disabled=false}};
+onAuthStateChanged(auth,u=>{if(u&&!busy)location.href="/"});
+</script></body></html>

@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UNIFY-CAMPUS</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"></head><body>
+<div class="shell">
+<aside class="side" aria-label="Main navigation">
+  <div class="brand"><span id="logo"></span><div><b>UNIFY-CAMPUS</b><span id="ws"></span></div><button id="close" class="x" aria-label="Close menu"></button></div>
+  <div class="nv" id="nv"></div>
+  <div class="me"><b id="meName"></b><span id="meSub"></span><button id="out" class="so">Sign Out</button></div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<div class="col">
+<header class="bar"><button id="menu" class="x" aria-label="Open menu"></button><h1 id="ttl"></h1><span id="pill" class="pillbar"></span></header>
+<main>
+<section id="home" hidden>
+<div class="hero"><div><p class="m2">Good to see you</p><h1 id="hi"></h1><p class="m2" id="sub"></p></div>
+<div class="ring"><svg viewBox="0 0 140 140" role="img" aria-label="Campus health"><circle cx="70" cy="70" r="58" class="bg"/><circle id="arc" cx="70" cy="70" r="58" class="fg" transform="rotate(-90 70 70)"/></svg><div><b id="hv">–</b><span>campus health</span></div></div></div>
+<div id="tiles" class="stats"></div>
+<div id="brief" class="brief" hidden></div>
+<h2>Campus heat map</h2><div id="heat" class="heat"></div>
+<div class="two"><div><h2 id="mineH">Your reports</h2><div id="mine"></div></div><div><h2>Top spotters</h2><ol id="lead" class="lead"></ol><p class="m">+10 points for each report, +2 for each "Me too".</p></div></div>
+</section>
+<section id="report" hidden><p class="m">Medical emergency or fire? Call <b>108</b> (ambulance) or <b>112</b> first, then report it here.</p><div class="chips" id="chips"></div><form id="f">
+<label>What is wrong? (English, Hindi or Hinglish)<textarea id="text" rows="3" required placeholder="e.g. Room 214 ka AC cooling nahi kar raha, raat ko bahut garmi hai"></textarea></label>
+<div class="row"><label>Where?<input id="loc" required placeholder="Hostel A - Room 214"></label><label>People affected<input id="ppl" type="number" min="1" value="1"></label></div>
+<button class="go">Send report</button></form><div id="result"></div></section>
+<section id="issues" hidden><div id="seg" class="seg"></div><div id="filters"></div><div id="list"></div></section>
+<section id="hostel" hidden>
+<div class="card"><h2>Your hostel</h2><div id="hostelInfo" class="kvs"></div></div>
+<h2>Open problems in your hostel</h2><div id="hostelIssues"></div>
+<div class="card who sp"><div><h2>College pharmacy</h2><p class="m">See which medicines are in stock, what each one is for, and when new stock arrives.</p></div><button id="toPharm" class="go" type="button">Open pharmacy</button></div>
+</section>
+<section id="alerts" hidden><div id="aStats" class="stats"></div><h2>Critical right now</h2><div id="aCrit"></div>
+<h2>Patterns we caught early</h2><div id="aWarn"></div><h2>Medicines to watch</h2><div id="aMed"></div>
+<div class="sos" style="margin-top:1.4rem;border-radius:12px">Medical emergency or fire: call <b>108</b> (ambulance) or <b>112</b> now, then contact campus security.</div></section>
+<section id="profile" hidden></section>
+</main></div></div>
+<script type="module" src="app.js"></script></body></html>
